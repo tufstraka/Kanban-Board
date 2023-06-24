@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
+import Task from "./Task";
 import "./Column.css";
 
-const Column = ({ name, onRename, onDelete }) => {
+const Column = ({ name, onRename, onDelete, tasks, id }) => {
   const [newName, setNewName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -21,8 +20,6 @@ const Column = ({ name, onRename, onDelete }) => {
   };
 
   return (
-    //To DO - Work on Draggables and Droppables
-
     <div className="column">
       <div className="column-header">
         {isEditing ? (
@@ -40,11 +37,8 @@ const Column = ({ name, onRename, onDelete }) => {
         ) : (
           <>
             <h2>{name}</h2>
-
             <div className="column-menu" onClick={handleMenuToggle}>
-              <div className="dots" >
-                . . .
-              </div>
+              <div className="dots">. . .</div>
               {isMenuOpen && (
                 <ul className="menu-options">
                   <li onClick={() => setIsEditing(true)}>Rename</li>
@@ -57,10 +51,24 @@ const Column = ({ name, onRename, onDelete }) => {
       </div>
       <hr />
       <div className="column-content">
-        {/* Render cards or other content for the column */}
+        <Droppable droppableId={id}>
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className={snapshot.isDraggingOver ? "dragging-over" : ""}
+            >
+              {tasks.map((task, index) => (
+                <Task key={task.id} task={task} index={index} />
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
       </div>
     </div>
   );
 };
 
 export default Column;
+
