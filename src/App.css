@@ -1,42 +1,79 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.app {
   text-align: center;
+  padding: 20px;
+  
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.add-column-button {
+  background-color: #2196f3;
+  color: white;
+  max-height: 40px;
+  min-width: 200px;
+  border-radius: 5px;
+  border: none;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.add-column-button:hover {
+  background-color: #0d8bf7;
 }
 
-.card {
-  padding: 2em;
+.columns {
+  display: flex;
 }
 
-.read-the-docs {
-  color: #888;
+.column {
+  min-width: 300px;
+  min-height: 300px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 10px;
+  margin-right: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.column-header {
+  display: flex;
+  align-items: center;
+  color: black;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.column-actions {
+  display: flex;
+}
+
+.column-action-button {
+  background-color: #bdbdbd;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.column-action-button:hover {
+  background-color: #9e9e9e;
+}
+
+.column-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.column-content {
+  /* Add any styles for the column content here */
+}
+
