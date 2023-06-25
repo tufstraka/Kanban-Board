@@ -79,8 +79,6 @@ const KanbanBoard = () => {
     setActiveColumn(`column-${columns.length + 1}`);
   };
 
-  // To Do: fix clearAllTasks function to clear tasks from specific column
-
   const clearAllTasks = () => {
     setTasks({
       "column-1": [],
@@ -91,6 +89,11 @@ const KanbanBoard = () => {
     });
     localStorage.removeItem("tasks");
   };
+
+  //To Do: Create clearTasks function for specific column
+
+  const clearTasks = () => {
+  }
 
   // Add new task to column and save to local storage when user clicks add button 
   const addTask = () => {
