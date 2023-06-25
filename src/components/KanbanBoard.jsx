@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
+import { v4 as uuidv4 } from "uuid";
 import Column from "./Column";
 
 const KanbanBoard = () => {
@@ -33,23 +34,28 @@ const KanbanBoard = () => {
   });
   const [showAddCard, setShowAddCard] = useState(false);
   const [newColumnName, setNewColumnName] = useState("");
+  const [activeColumn, setActiveColumn] = useState(null);
+  const [newTaskContent, setNewTaskContent] = useState("");
 
   useEffect(() => {
     const columnsJson = localStorage.getItem("columns");
     if (columnsJson) {
       const savedColumns = JSON.parse(columnsJson);
       setColumns(savedColumns);
+      setActiveColumn(`column-${columns.length}`);
     }
-  }, []);
+
+  }, [columns.length]);
 
   useEffect(() => {
     const savedTasks = localStorage.getItem("tasks");
-  
+
     if (savedTasks) {
       setTasks(JSON.parse(savedTasks));
     }
   }, []);
-  
+
+  console.log(activeColumn);
 
   const addColumn = () => {
     if (columns.length >= 5) {
@@ -57,6 +63,47 @@ const KanbanBoard = () => {
     }
 
     setShowAddCard(true);
+    setActiveColumn(`column-${columns.length + 1}`);
+  };
+
+
+// To Do: fix clearAllTasks function to clear tasks from specific column
+
+  const clearAllTasks = () => {
+    setTasks({"column-1": [],
+    "column-2": [],
+    "column-3": [],
+    "column-4": [],
+    "column-5": []
+    });
+    localStorage.removeItem("tasks");
+  };
+
+  // To Do: fix active column issue
+
+  const addTask = () => {
+    if (newTaskContent.trim() !== "" && activeColumn) {
+      const newTaskId = uuidv4();
+      const newTask = { id: newTaskId, content: newTaskContent };
+
+      const updatedTasks = {
+        ...tasks,
+        [activeColumn]: [...tasks[activeColumn], newTask],
+      };
+
+      setTasks(updatedTasks);
+
+      console.log(updatedTasks);
+
+      setNewTaskContent("");
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    }
+
+    const savedTasks = localStorage.getItem("tasks");
+
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
   };
 
   const saveColumn = () => {
@@ -70,7 +117,7 @@ const KanbanBoard = () => {
     }
   };
 
-  const cancelAdd = () => { 
+  const cancelAdd = () => {
     setShowAddCard(false);
     setNewColumnName("");
   };
@@ -80,76 +127,63 @@ const KanbanBoard = () => {
     updatedColumns[index] = newName;
     setColumns(updatedColumns);
 
-    //Update on Local Storage
     const updatedColumnsJson = JSON.stringify(updatedColumns);
     localStorage.setItem("columns", updatedColumnsJson);
   };
 
   const handleDragEnd = (result) => {
-    const { destination, source} = result;
-  
+    const { destination, source } = result;
+
     if (!destination) return;
-  
+
     const sourceColumnId = source.droppableId;
     const destinationColumnId = destination.droppableId;
-  
-    // Check if the task is dropped in a different column
+
     if (sourceColumnId !== destinationColumnId) {
       const sourceColumnTasks = [...tasks[sourceColumnId]];
       const destinationColumnTasks = [...tasks[destinationColumnId]];
-  
+
       const [movedTask] = sourceColumnTasks.splice(source.index, 1);
       destinationColumnTasks.splice(destination.index, 0, movedTask);
-  
+
       const updatedTasks = {
         ...tasks,
         [sourceColumnId]: sourceColumnTasks,
         [destinationColumnId]: destinationColumnTasks,
       };
-  
+
       setTasks(updatedTasks);
-      saveTasksToLocalStorage(updatedTasks);
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     } else {
-      // Rearrange tasks within the same column
       const columnTasks = [...tasks[sourceColumnId]];
-  
+
       const [movedTask] = columnTasks.splice(source.index, 1);
       columnTasks.splice(destination.index, 0, movedTask);
-  
+
       const updatedTasks = {
         ...tasks,
         [sourceColumnId]: columnTasks,
       };
-  
+
       setTasks(updatedTasks);
-      saveTasksToLocalStorage(updatedTasks);
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     }
   };
-  
-  const saveTasksToLocalStorage = (updatedTasks) => {
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
-  };
-  
-  
-
 
   const deleteColumn = (index) => {
     const updatedColumns = [...columns];
     updatedColumns.splice(index, 1);
     setColumns(updatedColumns);
 
-    //Update on Local Storage
     const updatedColumnsJson = JSON.stringify(updatedColumns);
     localStorage.setItem("columns", updatedColumnsJson);
   };
-
-  
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="app">
         <h1 className="app-heading">Kanban Board</h1>
-
+        <hr/>
         <div className="columns">
           {columns.map((column, index) => (
             <Column
@@ -159,6 +193,10 @@ const KanbanBoard = () => {
               name={column}
               onRename={(newName) => renameColumn(index, newName)}
               onDelete={() => deleteColumn(index)}
+              newTaskContent={newTaskContent}
+              setNewTaskContent={setNewTaskContent}
+              addTask={addTask}
+              clearAllTasks={clearAllTasks}
             />
           ))}
           {showAddCard && (
@@ -171,15 +209,13 @@ const KanbanBoard = () => {
                 onChange={(e) => setNewColumnName(e.target.value)}
               />
               <div className="add-buttons">
-              <button className="add-card-input-cancel" onClick={cancelAdd}>
-                Cancel
-              </button>
-
-              <button className="add-card-input-button" onClick={saveColumn}>
-                Add
-              </button>
+                <button className="add-card-input-cancel" onClick={cancelAdd}>
+                  Cancel
+                </button>
+                <button className="add-card-input-button" onClick={saveColumn}>
+                  Add
+                </button>
               </div>
-              
             </div>
           )}
           {!showAddCard && columns.length < 5 && (

@@ -3,7 +3,17 @@ import { Droppable } from "react-beautiful-dnd";
 import Task from "./Task";
 import "./Column.css";
 
-const Column = ({ name, onRename, onDelete, tasks, id }) => {
+const Column = ({
+  name,
+  onRename,
+  onDelete,
+  tasks,
+  id,
+  newTaskContent,
+  setNewTaskContent,
+  addTask,
+  clearAllTasks,
+}) => {
   const [newName, setNewName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,6 +52,7 @@ const Column = ({ name, onRename, onDelete, tasks, id }) => {
               {isMenuOpen && (
                 <ul className="menu-options">
                   <li onClick={() => setIsEditing(true)}>Rename</li>
+                  <li onClick={clearAllTasks}>Clear</li>
                   <li onClick={onDelete}>Delete</li>
                 </ul>
               )}
@@ -66,9 +77,29 @@ const Column = ({ name, onRename, onDelete, tasks, id }) => {
           )}
         </Droppable>
       </div>
+      <hr />
+      <div className="add-task">
+        <input
+          type="text"
+          placeholder="Enter task content"
+          className="add-card-input"
+          value={newTaskContent}
+          onChange={(e) => setNewTaskContent(e.target.value)}
+        />
+        <div className="add-task-buttons">
+          <button
+            className="add-task-cancel"
+            //onClick={() => setNewTask(false)}
+          >
+            Cancel
+          </button>
+          <button className="add-task-button" onClick={addTask}>
+            Add Task
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default Column;
-
