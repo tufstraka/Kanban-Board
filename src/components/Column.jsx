@@ -13,6 +13,7 @@ const Column = ({
   setNewTaskContent,
   addTask,
   clearAllTasks,
+  onMouseEnter
 }) => {
   const [newName, setNewName] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
@@ -85,11 +86,12 @@ const Column = ({
           className="add-card-input"
           value={newTaskContent}
           onChange={(e) => setNewTaskContent(e.target.value)}
+          onMouseEnter={onMouseEnter}
         />
         <div className="add-task-buttons">
           <button
             className="add-task-cancel"
-            //onClick={() => setNewTask(false)}
+            onClick={() => setNewTaskContent("")}
           >
             Cancel
           </button>

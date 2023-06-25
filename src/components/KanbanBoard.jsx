@@ -37,6 +37,8 @@ const KanbanBoard = () => {
   const [activeColumn, setActiveColumn] = useState(null);
   const [newTaskContent, setNewTaskContent] = useState("");
 
+  // Get saved columns from local storage
+
   useEffect(() => {
     const columnsJson = localStorage.getItem("columns");
     if (columnsJson) {
@@ -45,7 +47,11 @@ const KanbanBoard = () => {
       setActiveColumn(`column-${columns.length}`);
     }
 
+   
   }, [columns.length]);
+
+  
+  // Get saved tasks from local storage
 
   useEffect(() => {
     const savedTasks = localStorage.getItem("tasks");
@@ -55,7 +61,14 @@ const KanbanBoard = () => {
     }
   }, []);
 
-  console.log(activeColumn);
+  // Set new task content when user is typing in input
+  const setTaskContent = (content, columnIndex) => {
+    if (activeColumn === `column-${columnIndex + 1}`) {
+      setNewTaskContent(content);
+    }
+  };
+
+  // Add new column
 
   const addColumn = () => {
     if (columns.length >= 5) {
@@ -66,21 +79,20 @@ const KanbanBoard = () => {
     setActiveColumn(`column-${columns.length + 1}`);
   };
 
-
-// To Do: fix clearAllTasks function to clear tasks from specific column
+  // To Do: fix clearAllTasks function to clear tasks from specific column
 
   const clearAllTasks = () => {
-    setTasks({"column-1": [],
-    "column-2": [],
-    "column-3": [],
-    "column-4": [],
-    "column-5": []
+    setTasks({
+      "column-1": [],
+      "column-2": [],
+      "column-3": [],
+      "column-4": [],
+      "column-5": [],
     });
     localStorage.removeItem("tasks");
   };
 
-  // To Do: fix active column issue
-
+  // Add new task to column and save to local storage when user clicks add button 
   const addTask = () => {
     if (newTaskContent.trim() !== "" && activeColumn) {
       const newTaskId = uuidv4();
@@ -98,15 +110,15 @@ const KanbanBoard = () => {
       setNewTaskContent("");
       localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     }
-
-    const savedTasks = localStorage.getItem("tasks");
-
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
+    else {
+      alert("Please enter a task");
     }
+
   };
 
-  const saveColumn = () => {
+  // Add new column to columns array and save to local storage when user clicks add button
+
+  const addNewColumn = () => {
     if (newColumnName.trim() !== "") {
       const updatedColumns = [...columns, newColumnName];
       setColumns(updatedColumns);
@@ -117,10 +129,14 @@ const KanbanBoard = () => {
     }
   };
 
+  // Cancel adding new column
+
   const cancelAdd = () => {
     setShowAddCard(false);
     setNewColumnName("");
   };
+
+  // Rename column and save to local storage
 
   const renameColumn = (index, newName) => {
     const updatedColumns = [...columns];
@@ -131,6 +147,7 @@ const KanbanBoard = () => {
     localStorage.setItem("columns", updatedColumnsJson);
   };
 
+  // Handle drag and drop of tasks
   const handleDragEnd = (result) => {
     const { destination, source } = result;
 
@@ -183,7 +200,7 @@ const KanbanBoard = () => {
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="app">
         <h1 className="app-heading">Kanban Board</h1>
-        <hr/>
+        <hr />
         <div className="columns">
           {columns.map((column, index) => (
             <Column
@@ -193,10 +210,11 @@ const KanbanBoard = () => {
               name={column}
               onRename={(newName) => renameColumn(index, newName)}
               onDelete={() => deleteColumn(index)}
-              newTaskContent={newTaskContent}
-              setNewTaskContent={setNewTaskContent}
+              newTaskContent={activeColumn === `column-${index + 1}` ? newTaskContent : ""}
+              setNewTaskContent={(content) => setTaskContent(content, index)}
               addTask={addTask}
               clearAllTasks={clearAllTasks}
+              onMouseEnter={() => setActiveColumn(`column-${index + 1}`)}
             />
           ))}
           {showAddCard && (
@@ -212,7 +230,7 @@ const KanbanBoard = () => {
                 <button className="add-card-input-cancel" onClick={cancelAdd}>
                   Cancel
                 </button>
-                <button className="add-card-input-button" onClick={saveColumn}>
+                <button className="add-card-input-button" onClick={addNewColumn}>
                   Add
                 </button>
               </div>
