@@ -213,22 +213,26 @@ const KanbanBoard = () => {
         <h1 className="app-heading">Kanban Board</h1>
         <hr />
         <div className="columns">
-          {columns.map((column, index) => (
+          {columns.map((column, index) => {
+          const columnId = `column-${index + 1}`;
+
+          return (  
             <Column
-              key={index}
-              tasks={tasks[`column-${index + 1}`]}
-              id={`column-${index + 1}`}
+              key={columnId}
+              tasks={tasks[columnId]}
+              id={columnId}
               name={column}
               onRename={(newName) => renameColumn(index, newName)}
               onDelete={() => deleteColumn(index)}
-              newTaskContent={activeColumn === `column-${index + 1}` ? newTaskContent : ""}
+              newTaskContent={activeColumn === columnId ? newTaskContent : ""}
               setNewTaskContent={(content) => setTaskContent(content, index)}
               addTask={addTask}
               clearTasks={() => clearTasks(index)}
               clearAllTasks={clearAllTasks}
-              onMouseEnter={() => setActiveColumn(`column-${index + 1}`)}
+              onMouseEnter={() => setActiveColumn(columnId)}
             />
-          ))}
+          )
+          })}
           {showAddCard && (
             <div className="add-card">
               <input
