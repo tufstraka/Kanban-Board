@@ -13,6 +13,7 @@ const Column = ({
   setNewTaskContent,
   addTask,
   clearAllTasks,
+  clearTasks,
   onMouseEnter
 }) => {
   const [newName, setNewName] = useState(name);
@@ -53,7 +54,7 @@ const Column = ({
               {isMenuOpen && (
                 <ul className="menu-options">
                   <li onClick={() => setIsEditing(true)}>Rename</li>
-                  <li onClick={clearAllTasks}>Clear</li>
+                  <li onClick={clearTasks}>Clear</li>
                   <li onClick={onDelete}>Delete</li>
                 </ul>
               )}

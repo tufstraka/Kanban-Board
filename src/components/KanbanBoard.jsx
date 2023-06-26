@@ -54,10 +54,11 @@ const KanbanBoard = () => {
   // Get saved tasks from local storage
 
   useEffect(() => {
-    const savedTasks = localStorage.getItem("tasks");
+    const savedTasksJson = localStorage.getItem("tasks");
 
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
+    if (savedTasksJson) {
+      const savedTasks = JSON.parse(savedTasksJson);
+      setTasks(savedTasks);
     }
   }, []);
 
@@ -90,10 +91,17 @@ const KanbanBoard = () => {
     localStorage.removeItem("tasks");
   };
 
-  //To Do: Create clearTasks function for specific column
+  //clears Tasks for specific column
 
-  const clearTasks = () => {
-  }
+  const clearTasks = (index) => {
+    const columnId = `column-${index + 1}`;
+    const updatedTasks = { ...tasks };
+    updatedTasks[columnId] = [];
+  
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+  
 
   // Add new task to column and save to local storage when user clicks add button 
   const addTask = () => {
@@ -216,6 +224,7 @@ const KanbanBoard = () => {
               newTaskContent={activeColumn === `column-${index + 1}` ? newTaskContent : ""}
               setNewTaskContent={(content) => setTaskContent(content, index)}
               addTask={addTask}
+              clearTasks={() => clearTasks(index)}
               clearAllTasks={clearAllTasks}
               onMouseEnter={() => setActiveColumn(`column-${index + 1}`)}
             />
