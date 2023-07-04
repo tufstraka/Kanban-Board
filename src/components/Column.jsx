@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Droppable } from "react-beautiful-dnd";
+import PropTypes from "prop-types";
 import Task from "./Task";
 import "./Column.css";
 
@@ -12,7 +13,6 @@ const Column = ({
   newTaskContent,
   setNewTaskContent,
   addTask,
-  clearAllTasks,
   clearTasks,
   onMouseEnter
 }) => {
@@ -103,6 +103,20 @@ const Column = ({
       </div>
     </div>
   );
+};
+
+Column.propTypes = {
+  name: PropTypes.string.isRequired,
+  onRename: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  tasks: PropTypes.array.isRequired,
+  id: PropTypes.string.isRequired,
+  newTaskContent: PropTypes.string.isRequired,
+  setNewTaskContent: PropTypes.func.isRequired,
+  addTask: PropTypes.func.isRequired,
+  clearAllTasks: PropTypes.func.isRequired,
+  clearTasks: PropTypes.func.isRequired,
+  onMouseEnter: PropTypes.func.isRequired
 };
 
 export default Column;
