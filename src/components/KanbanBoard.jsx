@@ -128,14 +128,6 @@ const KanbanBoard = () => {
 
   };
 
-const CheckEnter = () => {
-    if (event.keyCode === 13) {
-        event.preventDefault()
-        addTask();
-        console.log("Task added!");
-    }
-  }
-
   // Add new column to columns array and save to local storage when user clicks add button
 
   const addNewColumn = () => {
