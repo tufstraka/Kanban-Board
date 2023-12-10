@@ -12,6 +12,9 @@
     font-size: 14px;
     font-weight: 500;
   }
+  .task_items{
+    flex-direction: column;
+  }
   
   .task.dragging {
     transform: rotate(4deg);
@@ -21,4 +24,11 @@
     background-color: #f1f1f1;
     cursor: grab;
   }
-  
+  .task_id {
+    font-size: 10px;
+    color: grey;
+    display: block;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #333333;
+  }

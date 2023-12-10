@@ -12,9 +12,10 @@ const Task = ({ task, index }) => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-    
-          {task.content}
-          
+          <div className="task_items">
+          <div className="task_id">ID: {task.id}</div>
+          <div>{task.content}</div>
+          </div>
         </div>
       )}
     </Draggable>
