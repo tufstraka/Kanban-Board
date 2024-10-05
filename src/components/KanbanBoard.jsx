@@ -69,6 +69,14 @@ const KanbanBoard = () => {
     }
   };
 
+  const CheckEnter = () => {
+    if (event.keyCode === 13) {
+        event.preventDefault()
+        addTask();
+        console.log("Task added!");
+    }
+  }
+
   // Add new column
 
   const addColumn = () => {
